@@ -7,7 +7,7 @@ import org.apache.spark.sql.{DataFrame, SQLContext}
 
 package object fixedwidth {
   implicit class CsvContext(sqlContext: SQLContext) extends Serializable {
-    def flatFile(
+    def fixedFile(
         filePath: String,
         fixedWidths: Array[Int],
         schema: StructType = null,

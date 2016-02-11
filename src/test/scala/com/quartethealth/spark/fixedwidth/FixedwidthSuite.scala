@@ -3,7 +3,7 @@ package com.quartethealth.spark.fixedwidth
 
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{DataFrame, SQLContext}
-import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType, DoubleType};
+import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType, DoubleType}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class FixedwidthSuite extends FunSuite with BeforeAndAfterAll {
@@ -45,25 +45,25 @@ class FixedwidthSuite extends FunSuite with BeforeAndAfterAll {
   }
 
   test("Parse basic") {
-    val result = sqlContext.flatFile(fruit_resource(), fruitWidths, fruitSchema,
+    val result = sqlContext.fixedFile(fruit_resource(), fruitWidths, fruitSchema,
       useHeader = false)
     sanityChecks(result)
   }
 
   test("Parse with headers, ignore") {
-    val result = sqlContext.flatFile(fruit_resource("w_headers"), fruitWidths,
+    val result = sqlContext.fixedFile(fruit_resource("w_headers"), fruitWidths,
       fruitSchema, useHeader = true)
     sanityChecks(result)
   }
 
   test("Parse with overflow, ignore") {
-    val result = sqlContext.flatFile(fruit_resource("overflow"), fruitWidths,
+    val result = sqlContext.fixedFile(fruit_resource("overflow"), fruitWidths,
       fruitSchema, useHeader = false)
     sanityChecks(result)
   }
 
   test("Parse with underflow, ignore") {
-    val result = sqlContext.flatFile(fruit_resource("underflow"), fruitWidths,
+    val result = sqlContext.fixedFile(fruit_resource("underflow"), fruitWidths,
       fruitSchema, useHeader = false)
     sanityChecks(result)
   }
