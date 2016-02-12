@@ -7,20 +7,20 @@ import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerT
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class FixedwidthSuite extends FunSuite with BeforeAndAfterAll {
-  def fruit_resource(name: String = ""): String = s"src/test/resources/fruit_${name}_fixedwidth.txt"
+  protected def fruit_resource(name: String = ""): String = s"src/test/resources/fruit_${name}_fixedwidth.txt"
 
-  val fruitWidths = Array(3, 10, 5, 4)
-  val fruitSize = 7
-  val fruitFirstRow = Seq(56, "apple", "TRUE", 0.56)
+  protected val fruitWidths = Array(3, 10, 5, 4)
+  protected val fruitSize = 7
+  protected val fruitFirstRow = Seq(56, "apple", "TRUE", 0.56)
 
-  val fruitSchema = StructType(Seq(
+  protected val fruitSchema = StructType(Seq(
     StructField("val", IntegerType),
     StructField("name", StringType),
     StructField("avail", StringType),
     StructField("cost", DoubleType)
   ))
 
-  private var sqlContext: SQLContext = _
+  protected var sqlContext: SQLContext = _
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()
@@ -35,7 +35,7 @@ class FixedwidthSuite extends FunSuite with BeforeAndAfterAll {
     }
   }
 
-  private def sanityChecks(resultSet: DataFrame): Unit = {
+  protected def sanityChecks(resultSet: DataFrame): Unit = {
     resultSet.show()
     assert(resultSet.collect().length === fruitSize)
 
@@ -66,6 +66,51 @@ class FixedwidthSuite extends FunSuite with BeforeAndAfterAll {
     val result = sqlContext.fixedFile(fruit_resource("underflow"), fruitWidths,
       fruitSchema, useHeader = false)
     sanityChecks(result)
+  }
+
+  test("Parse basic without schema, uninferred") {
+    val result = sqlContext.fixedFile(fruit_resource(), fruitWidths,
+      useHeader = false, inferSchema = false)
+    sanityChecks(result)
+  }
+
+  test("Parse basic without schema, inferred") {
+    val result = sqlContext.fixedFile(fruit_resource(), fruitWidths,
+      useHeader = false, inferSchema = true)
+    sanityChecks(result)
+  }
+
+  test("Parse with headers without schema, inferred") {
+    val result = sqlContext.fixedFile(fruit_resource("w_headers"), fruitWidths,
+      useHeader = true, inferSchema = true)
+    sanityChecks(result)
+  }
+
+  test("Parse with comments, ignore") {
+    val result = sqlContext.fixedFile(fruit_resource("comments"), fruitWidths,
+      useHeader = true, inferSchema = true, comment = '/')
+    sanityChecks(result)
+  }
+
+  test("Parse malformed, schemaless, PERMISSIVE") {
+    val result = sqlContext.fixedFile(fruit_resource("malformed"), fruitWidths,
+      useHeader = false, mode = "PERMISSIVE")
+    result.show()
+    assert(result.collect().length === fruitSize)
+  }
+
+  test("Parse malformed, schemaless, DROPMALFORMED") {
+    val result = sqlContext.fixedFile(fruit_resource("malformed"), fruitWidths,
+      useHeader = false, mode = "DROPMALFORMED")
+    result.show()
+    assert(result.collect().length < fruitSize)
+  }
+
+  test("Parse malformed, with schema, FAILFAST") {
+    intercept[Exception](
+      sqlContext.fixedFile(fruit_resource("malformed"), fruitWidths,
+        fruitSchema, useHeader = false, mode = "FAILFAST").collect()
+    )
   }
 
 }

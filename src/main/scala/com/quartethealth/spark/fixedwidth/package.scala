@@ -14,8 +14,8 @@ package object fixedwidth {
         useHeader: Boolean = true,
         mode: String = "PERMISSIVE",
         comment: Character = null,
-        ignoreLeadingWhiteSpace: Boolean = false,
-        ignoreTrailingWhiteSpace: Boolean = false,
+        ignoreLeadingWhiteSpace: Boolean = true,
+        ignoreTrailingWhiteSpace: Boolean = true,
         charset: String = TextFile.DEFAULT_CHARSET.name(),
         inferSchema: Boolean = false): DataFrame = {
       val fixedwidthRelation = new FixedwidthRelation(

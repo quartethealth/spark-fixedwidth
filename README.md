@@ -25,11 +25,19 @@ When reading files the API accepts several options:
 * `charset`: defaults to 'UTF-8' but can be set to other valid charset names
 * `inferSchema`: automatically infers column types. It requires one extra pass over the data and is false by default
 * `comment`: skip lines beginning with this character. Default is `"#"`. Disable comments by setting this to `null`.
+* `mode`: determines the parsing mode. By default it is PERMISSIVE. Possible values are:
+  * `PERMISSIVE`: tries to parse all lines: nulls are inserted for missing tokens and extra tokens are ignored.
+  * `DROPMALFORMED`: drops lines which have fewer or more tokens than expected or tokens which do not match the schema
+  * `FAILFAST`: aborts with a RuntimeException if encounters any malformed line
 * `codec`: compression codec to use when saving to file. Should be the fully qualified name of a class implementing `org.apache.hadoop.io.compress.CompressionCodec` or one of case-insensitive shorten names (`bzip2`, `gzip`, `lz4`, and `snappy`). Defaults to no compression when a codec is not specified.
-* `nullValue`: specificy a string that indicates a null value, any fields matching this string will be set as nulls in the DataFrame
+* `nullValue`: specify a string that indicates a null value. Any fields matching this string will be set as nulls in the DataFrame
+* `ignoreLeadingWhiteSpace`: Boolean, default true
+* `ignoreTrailingWhiteSpace`: Boolean, default true
 
 ### Scala API
 __Spark 1.4+:__
+
+See [sample fixed-width files](src/test/resources)
 ```scala
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType, DoubleType}
@@ -52,4 +60,18 @@ val result = sqlContext.fixedFile(
     useHeader = false
 )
 result.show() // Prints top 20 rows in tabular format
+
+// Example without schema, and showing extra options
+val fruit_resource = 'fruit_w_headers_fixedwidths.txt'
+val result = sqlContext.fixedFile(
+    fruit_resource,
+    fruitWidths,
+    useHeader = true,
+    inferSchema = true,
+    mode = "DROPMALFORMED",
+    comment = '/',
+    ignoreLeadingWhiteSpace: true,
+    ignoreTrailingWhiteSpace: false,
+)
+result.collect() // Returns an array that contains all of Rows in this DataFrame
 ```
