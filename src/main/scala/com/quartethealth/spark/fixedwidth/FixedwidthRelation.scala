@@ -1,12 +1,11 @@
 package com.quartethealth.spark.fixedwidth
 
-import com.databricks.spark.csv.readers.{BulkReader, LineReader}
-import com.quartethealth.spark.fixedwidth.readers.{LineFixedwidthReader, BulkFixedwidthReader}
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.SQLContext
-
 import com.databricks.spark.csv.CsvRelation
+import com.databricks.spark.csv.readers.{BulkReader, LineReader}
+import com.quartethealth.spark.fixedwidth.readers.{BulkFixedwidthReader, LineFixedwidthReader}
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.types.StructType
 
 class FixedwidthRelation protected[spark] (
     baseRDD: () => RDD[String],
@@ -41,7 +40,6 @@ class FixedwidthRelation protected[spark] (
 
   protected override def getLineReader(): LineReader = {
     val commentChar: Char = if (comment == null) '\0' else comment
-
     new LineFixedwidthReader(fixedWidths, commentMarker = commentChar,
       ignoreLeadingSpace = ignoreLeadingWhiteSpace,
       ignoreTrailingSpace = ignoreTrailingWhiteSpace)

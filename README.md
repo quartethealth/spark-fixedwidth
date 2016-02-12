@@ -39,8 +39,9 @@ __Spark 1.4+:__
 
 See [sample fixed-width files](src/test/resources)
 ```scala
-import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType, DoubleType}
+import com.quartethealth.spark.fixedwidth.FixedwidthContext
 
 val fruitSchema = StructType(Seq(
     StructField("val", IntegerType),
@@ -49,9 +50,9 @@ val fruitSchema = StructType(Seq(
     StructField("cost", DoubleType)
 ))
 
-val sqlContext = new SQLContext(sc)
+val sqlContext = new SQLContext(sc) // sc is defined in the spark console
 val fruitWidths = Array(3, 10, 5, 4)
-val fruit_resource = 'fruit_fixedwidths.txt'
+val fruit_resource = "fruit_fixedwidths.txt"
 
 val result = sqlContext.fixedFile(
     fruit_resource,
@@ -62,7 +63,7 @@ val result = sqlContext.fixedFile(
 result.show() // Prints top 20 rows in tabular format
 
 // Example without schema, and showing extra options
-val fruit_resource = 'fruit_w_headers_fixedwidths.txt'
+val fruit_resource = "fruit_w_headers_fixedwidths.txt"
 val result = sqlContext.fixedFile(
     fruit_resource,
     fruitWidths,
@@ -70,8 +71,8 @@ val result = sqlContext.fixedFile(
     inferSchema = true,
     mode = "DROPMALFORMED",
     comment = '/',
-    ignoreLeadingWhiteSpace: true,
-    ignoreTrailingWhiteSpace: false,
+    ignoreLeadingWhiteSpace = true,
+    ignoreTrailingWhiteSpace = false
 )
 result.collect() // Returns an array that contains all of Rows in this DataFrame
 ```

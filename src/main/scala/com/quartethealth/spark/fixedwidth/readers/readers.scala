@@ -1,7 +1,7 @@
 package com.quartethealth.spark.fixedwidth.readers
 
 import com.databricks.spark.csv.readers.{BulkReader, LineReader}
-import com.univocity.parsers.fixed.{FixedWidthParserSettings, FixedWidthFieldLengths, FixedWidthParser}
+import com.univocity.parsers.fixed.{FixedWidthFieldLengths, FixedWidthParser, FixedWidthParserSettings}
 
 /**
   * Read and parse Fixed-width-like input

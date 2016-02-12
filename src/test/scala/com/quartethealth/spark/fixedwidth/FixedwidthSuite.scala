@@ -1,13 +1,14 @@
 package com.quartethealth.spark.fixedwidth
 
-
 import org.apache.spark.SparkContext
+import org.apache.spark.sql.types.{DoubleType, IntegerType, StringType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, SQLContext}
-import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType, DoubleType}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
+
 class FixedwidthSuite extends FunSuite with BeforeAndAfterAll {
-  protected def fruit_resource(name: String = ""): String = s"src/test/resources/fruit_${name}_fixedwidth.txt"
+  protected def fruit_resource(name: String = ""): String =
+    s"src/test/resources/fruit_${name}_fixedwidth.txt"
 
   protected val fruitWidths = Array(3, 10, 5, 4)
   protected val fruitSize = 7

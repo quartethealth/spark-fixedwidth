@@ -1,12 +1,11 @@
 package com.quartethealth.spark
 
-
 import com.databricks.spark.csv.util.TextFile
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, SQLContext}
 
 package object fixedwidth {
-  implicit class CsvContext(sqlContext: SQLContext) extends Serializable {
+  implicit class FixedwidthContext(sqlContext: SQLContext) extends Serializable {
     def fixedFile(
         filePath: String,
         fixedWidths: Array[Int],
