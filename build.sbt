@@ -2,6 +2,8 @@ name := "spark-fixedwidth"
 
 version := "1.0"
 
+organization := "com.quartethealth"
+
 scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq(
