@@ -79,7 +79,7 @@ private[fixedwidth] class LineFixedwidthReader(
     * @return array of strings where each string is a field in the CSV record
     */
   def parseLine(line: String): Array[String] = {
-    parser.beginParsing(getReader(line))
+    parser.beginParsing(reader(line))
     val parsed = parser.parseNext()
     parser.stopParsing()
     parsed
@@ -120,7 +120,7 @@ private[fixedwidth] class BulkFixedwidthReader(
     maxCols
   ) with BulkReader {
 
-  parser.beginParsing(getReader(iter))
+  parser.beginParsing(reader(iter))
   private var nextRecord = parser.parseNext()
 
   /**
